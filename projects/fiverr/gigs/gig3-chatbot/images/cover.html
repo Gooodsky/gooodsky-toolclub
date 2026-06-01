@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1280px; height: 769px; overflow: hidden;
+    font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+    background: #0d1117;
+  }
+  .cover {
+    width: 1280px; height: 769px; position: relative;
+    background: linear-gradient(150deg, #0d1117 0%, #111827 30%, #0f172a 60%, #0a0f1a 100%);
+    overflow: hidden;
+  }
+  /* Subtle dots */
+  .dots-bg {
+    position: absolute; inset: 0; opacity: 0.08;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.5) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  /* Glow */
+  .glow-blue {
+    position: absolute; width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(77,107,254,0.15), transparent 70%);
+    top: -100px; left: -100px; border-radius: 50%;
+  }
+  .glow-green {
+    position: absolute; width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(7,193,96,0.1), transparent 70%);
+    bottom: -80px; right: 20%; border-radius: 50%;
+  }
+
+  /* Robot avatar */
+  .bot-avatar {
+    position: absolute; left: 80px; top: 190px;
+    width: 100px; height: 100px; border-radius: 28px;
+    background: linear-gradient(135deg, #4D6BFE, #6366f1);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 40px rgba(77,107,254,0.3);
+    z-index: 10;
+  }
+  .bot-face {
+    width: 50px; height: 40px; position: relative;
+  }
+  .bot-eye {
+    position: absolute; width: 10px; height: 14px; background: #fff;
+    border-radius: 5px; top: 0;
+  }
+  .bot-eye.left { left: 8px; }
+  .bot-eye.right { right: 8px; }
+  .bot-mouth {
+    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 24px; height: 8px; border-radius: 0 0 12px 12px;
+    background: #fff;
+  }
+  .bot-antenna {
+    position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+    width: 4px; height: 20px; background: #4D6BFE; border-radius: 2px;
+  }
+  .bot-antenna-dot {
+    position: absolute; top: -28px; left: 50%; transform: translateX(-50%);
+    width: 10px; height: 10px; background: #07C160; border-radius: 50%;
+    box-shadow: 0 0 10px rgba(7,193,96,0.6);
+  }
+
+  /* Chat bubbles - left column */
+  .chat-bubble {
+    position: absolute; border-radius: 16px; padding: 14px 18px;
+    font-size: 13px; line-height: 1.5; max-width: 320px;
+    z-index: 5;
+  }
+  .bubble-user {
+    background: rgba(77,107,254,0.12); color: rgba(255,255,255,0.9);
+    border: 1px solid rgba(77,107,254,0.2);
+    border-bottom-left-radius: 4px;
+  }
+  .bubble-bot {
+    background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.85);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-bottom-right-radius: 4px;
+  }
+  .bubble-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    margin-bottom: 6px; text-transform: uppercase;
+  }
+
+  .bubble-1 {
+    left: 210px; top: 190px;
+  }
+  .bubble-1 .bubble-label { color: #4D6BFE; }
+  .bubble-2 {
+    left: 210px; top: 310px;
+  }
+  .bubble-2 .bubble-label { color: #07C160; }
+  .bubble-3 {
+    left: 210px; top: 430px;
+  }
+  .bubble-3 .bubble-label { color: #4D6BFE; }
+
+  /* Chat widget preview - right side */
+  .chat-widget {
+    position: absolute; right: 80px; top: 90px;
+    width: 440px; height: 520px;
+    background: #161b22; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    z-index: 10;
+  }
+  .widget-header {
+    height: 56px; background: linear-gradient(135deg, #4D6BFE, #6366f1);
+    display: flex; align-items: center; padding: 0 20px; gap: 12px;
+  }
+  .widget-bot-icon {
+    width: 34px; height: 34px; background: rgba(255,255,255,0.2);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: #fff;
+  }
+  .widget-header-text h4 { font-size: 14px; color: #fff; font-weight: 600; }
+  .widget-header-text span { font-size: 11px; color: rgba(255,255,255,0.7); }
+  .widget-online {
+    width: 8px; height: 8px; background: #07C160; border-radius: 50%;
+    margin-left: auto; box-shadow: 0 0 8px rgba(7,193,96,0.5);
+  }
+  .widget-body {
+    flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 14px;
+    overflow: hidden;
+  }
+  .widget-msg {
+    max-width: 85%; padding: 12px 16px; border-radius: 14px;
+    font-size: 12.5px; line-height: 1.5;
+  }
+  .widget-msg.bot {
+    align-self: flex-start; background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.85); border-bottom-left-radius: 4px;
+  }
+  .widget-msg.user {
+    align-self: flex-end; background: #4D6BFE; color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+  .widget-source {
+    align-self: flex-start; font-size: 10px; color: #07C160;
+    padding-left: 4px; display: flex; align-items: center; gap: 4px;
+  }
+  .widget-source::before {
+    content: ''; display: inline-block; width: 6px; height: 6px;
+    background: #07C160; border-radius: 50%;
+  }
+  .widget-input-row {
+    height: 56px; border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; padding: 0 16px; gap: 10px;
+  }
+  .widget-input {
+    flex: 1; height: 36px; background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;
+    padding: 0 14px; color: rgba(255,255,255,0.4); font-size: 12px;
+    display: flex; align-items: center;
+  }
+  .widget-send {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: #4D6BFE; border: none; display: flex; align-items: center;
+    justify-content: center;
+  }
+  .widget-send-arrow {
+    width: 0; height: 0; border-left: 6px solid #fff;
+    border-top: 5px solid transparent; border-bottom: 5px solid transparent;
+    margin-left: 2px;
+  }
+
+  /* Knowledge base nodes */
+  .kb-nodes {
+    position: absolute; right: 550px; top: 120px; z-index: 5;
+  }
+  .kb-node {
+    position: absolute; display: flex; align-items: center; gap: 8px;
+    font-size: 11px; color: rgba(255,255,255,0.5); font-weight: 500;
+  }
+  .kb-node-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #4D6BFE;
+    box-shadow: 0 0 8px rgba(77,107,254,0.5);
+  }
+  .kb-node:nth-child(1) { left: 10px; top: 0; }
+  .kb-node:nth-child(2) { left: 30px; top: 30px; }
+  .kb-node:nth-child(2) .kb-node-dot { background: #07C160; box-shadow: 0 0 8px rgba(7,193,96,0.5); }
+  .kb-node:nth-child(3) { left: 0px; top: 60px; }
+  .kb-node:nth-child(4) { left: 40px; top: 90px; }
+  .kb-node:nth-child(4) .kb-node-dot { background: #a78bfa; box-shadow: 0 0 8px rgba(167,139,250,0.5); }
+
+  /* KB connection lines */
+  .kb-lines {
+    position: absolute; right: 550px; top: 120px; z-index: 3;
+  }
+
+  /* Text */
+  .badge {
+    position: absolute; left: 80px; top: 320px; z-index: 10;
+    display: inline-block; background: rgba(7,193,96,0.1);
+    color: #07C160; padding: 6px 16px; border-radius: 20px;
+    font-size: 13px; font-weight: 600; letter-spacing: 1px;
+    border: 1px solid rgba(7,193,96,0.2);
+  }
+  .main-title {
+    position: absolute; left: 80px; top: 368px; z-index: 10;
+    font-size: 40px; font-weight: 800; color: #fff;
+    line-height: 1.15; letter-spacing: -1px; max-width: 480px;
+  }
+  .main-title span { color: #4D6BFE; }
+  .sub-text {
+    position: absolute; left: 80px; top: 492px; z-index: 10;
+    font-size: 16px; color: rgba(255,255,255,0.5); letter-spacing: 0.5px;
+    max-width: 440px; line-height: 1.5;
+  }
+  .features-row {
+    position: absolute; left: 80px; bottom: 170px; z-index: 10;
+    display: flex; gap: 10px;
+  }
+  .feature-tag {
+    padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.6);
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  .feature-tag.highlight {
+    background: rgba(7,193,96,0.1); border-color: rgba(7,193,96,0.25); color: #07C160;
+  }
+  .feature-tag.blue {
+    background: rgba(77,107,254,0.1); border-color: rgba(77,107,254,0.25); color: #4D6BFE;
+  }
+
+  /* Brand */
+  .brand-logo {
+    position: absolute; top: 36px; left: 80px; height: 32px; z-index: 20;
+  }
+  .brand-logo img { height: 32px; }
+  .brand-name {
+    position: absolute; bottom: 36px; right: 80px;
+    font-size: 18px; font-weight: 700; color: rgba(255,255,255,0.4);
+    letter-spacing: 2px; z-index: 20;
+  }
+
+  /* RAG tag */
+  .rag-tag {
+    position: absolute; top: 40px; right: 80px;
+    color: #07C160; font-size: 13px; font-weight: 600;
+    letter-spacing: 1.5px; z-index: 10;
+    border: 1px solid rgba(7,193,96,0.25); padding: 6px 14px;
+    border-radius: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="cover">
+  <div class="dots-bg"></div>
+  <div class="glow-blue"></div>
+  <div class="glow-green"></div>
+
+  <!-- KB connection lines SVG -->
+  <svg style="position:absolute; right:550px; top:120px; z-index:3; width:300px; height:150px;" viewBox="0 0 300 150">
+    <line x1="80" y1="20" x2="50" y2="100" stroke="#4D6BFE" stroke-width="0.8" opacity="0.25"/>
+    <line x1="80" y1="20" x2="120" y2="80" stroke="#4D6BFE" stroke-width="0.8" opacity="0.2"/>
+    <line x1="80" y1="20" x2="170" y2="40" stroke="#07C160" stroke-width="0.8" opacity="0.3"/>
+    <line x1="50" y1="100" x2="120" y2="80" stroke="#a78bfa" stroke-width="0.8" opacity="0.2"/>
+    <line x1="170" y1="40" x2="220" y2="90" stroke="#07C160" stroke-width="0.8" opacity="0.2"/>
+    <line x1="220" y1="90" x2="120" y2="80" stroke="#4D6BFE" stroke-width="0.8" opacity="0.15"/>
+  </svg>
+
+  <!-- KB nodes -->
+  <div class="kb-nodes">
+    <div class="kb-node" style="left:65px; top:8px">
+      <div class="kb-node-dot"></div> PDFs
+    </div>
+    <div class="kb-node" style="left:30px; top:40px">
+      <div class="kb-node-dot" style="background:#07C160; box-shadow:0 0 8px rgba(7,193,96,0.5)"></div> Web Pages
+    </div>
+    <div class="kb-node" style="left:90px; top:70px">
+      <div class="kb-node-dot"></div> FAQs
+    </div>
+    <div class="kb-node" style="left:150px; top:28px">
+      <div class="kb-node-dot" style="background:#a78bfa; box-shadow:0 0 8px rgba(167,139,250,0.5)"></div> Vector DB
+    </div>
+    <div class="kb-node" style="left:185px; top:75px">
+      <div class="kb-node-dot" style="background:#4D6BFE; box-shadow:0 0 8px rgba(77,107,254,0.5)"></div> API Docs
+    </div>
+  </div>
+
+  <!-- Robot avatar -->
+  <div class="bot-avatar">
+    <div class="bot-antenna"></div>
+    <div class="bot-antenna-dot"></div>
+    <div class="bot-face">
+      <div class="bot-eye left"></div>
+      <div class="bot-eye right"></div>
+      <div class="bot-mouth"></div>
+    </div>
+  </div>
+
+  <!-- Chat bubbles - left side -->
+  <div class="chat-bubble bubble-user bubble-1">
+    <div class="bubble-label">Customer</div>
+    What is your return policy for international orders?
+  </div>
+  <div class="chat-bubble bubble-bot bubble-2">
+    <div class="bubble-label">AI Agent</div>
+    Our international return policy allows returns within 30 days. Customers are responsible for return shipping costs...
+  </div>
+  <div class="chat-bubble bubble-bot bubble-3">
+    <div class="bubble-label" style="color:#07C160;">Source</div>
+    Retrieved from: Return Policy Doc, Section 4.2
+  </div>
+
+  <!-- Chat widget (right) -->
+  <div class="chat-widget">
+    <div class="widget-header">
+      <div class="widget-bot-icon">&#9758;</div>
+      <div class="widget-header-text">
+        <h4>SupportBot AI</h4>
+        <span>Typically replies instantly</span>
+      </div>
+      <div class="widget-online"></div>
+    </div>
+    <div class="widget-body">
+      <div class="widget-msg bot">
+        Hi! I'm your AI support assistant. I can help with orders, returns, shipping, and product questions. What can I help with today?
+      </div>
+      <div class="widget-msg user">
+        How do I track my order?
+      </div>
+      <div class="widget-msg bot">
+        You can track your order by logging into your account and visiting the <b>Order History</b> page. You'll find a tracking number for shipped orders there. Would you like me to help with anything else?
+      </div>
+      <div class="widget-source">Source: Help Center / Order Tracking</div>
+    </div>
+    <div class="widget-input-row">
+      <div class="widget-input">Type your message...</div>
+      <div class="widget-send"><div class="widget-send-arrow"></div></div>
+    </div>
+  </div>
+
+  <!-- Text -->
+  <div class="badge">RAG-POWERED CHATBOT</div>
+  <div class="main-title">Custom AI Chatbot<br><span>Trained on Your</span> Knowledge Base</div>
+  <div class="sub-text">
+    Deploy a production-ready chatbot that answers customer questions
+    instantly — powered by your documents, products, and data. Zero hallucinations.
+  </div>
+  <div class="features-row">
+    <div class="feature-tag blue">RAG Pipeline</div>
+    <div class="feature-tag">24/7 Support</div>
+    <div class="feature-tag highlight">90%+ Accuracy</div>
+    <div class="feature-tag">Source Citation</div>
+    <div class="feature-tag">Multi-Language</div>
+  </div>
+
+  <!-- RAG tag -->
+  <div class="rag-tag">RAG · GPT-4o · Claude</div>
+
+  <!-- Brand -->
+  <div class="brand-logo">
+    <img src="../../../../../public/logo1-no-bg.png" alt="ToolClub" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+    <span style="display:none; color:#fff; font-size:18px; font-weight:700;">ToolClub</span>
+  </div>
+  <div class="brand-name">Gooodsky</div>
+</div>
+</div>
+</body>
+</html>

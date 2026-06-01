@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-primary: #4D6BFE;
+  --color-primary-hover: #3B53EB;
+  --color-primary-light: #EDF0FF;
+  --color-primary-container: #EDF0FF;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #1e3a5f;
+  --color-secondary: #7c3aed;
+  --color-tertiary: #f59e0b;
+  --color-success: #10b981;
+  --color-error: #ef4444;
+  --color-error-container: #fef2f2;
+  --color-on-error-container: #991b1b;
+  --color-bg: #f8fafc;
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-container: #f1f5f9;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-highest: #e2e8f0;
+  --color-text: #0f172a;
+  --color-text-secondary: #334155;
+  --color-text-muted: #94a3b8;
+  --color-on-surface: #0f172a;
+  --color-on-surface-variant: #475569;
+  --color-border: #e2e8f0;
+  --color-outline: #cbd5e1;
+  --color-outline-variant: #e2e8f0;
+  --shadow-elevation-1: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-elevation-2: 0 4px 12px rgba(0,0,0,0.1);
+  --shadow-elevation-3: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}

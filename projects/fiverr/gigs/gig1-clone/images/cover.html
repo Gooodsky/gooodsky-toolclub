@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1280px; height: 769px; overflow: hidden;
+    font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+    background: #1a1a2e;
+  }
+  .cover {
+    width: 1280px; height: 769px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%);
+  }
+  /* Grid overlay */
+  .grid-bg {
+    position: absolute; inset: 0; opacity: 0.04;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  /* Left panel - Code Editor */
+  .code-panel {
+    position: absolute; left: 80px; top: 120px;
+    width: 480px; height: 420px;
+    background: #0d1117; border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    overflow: hidden;
+  }
+  .code-header {
+    height: 44px; background: #161b22;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; padding: 0 16px; gap: 8px;
+  }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot-red { background: #ff5f56; }
+  .dot-yellow { background: #ffbd2e; }
+  .dot-green { background: #27ca40; }
+  .code-tab {
+    margin-left: 12px; color: #8b949e; font-size: 12px;
+    background: #0d1117; padding: 4px 12px; border-radius: 6px 6px 0 0;
+    border: 1px solid rgba(255,255,255,0.06); border-bottom: none;
+  }
+  .code-body {
+    padding: 20px 24px; font-family: 'Consolas', 'Fira Code', 'Courier New', monospace;
+    font-size: 13px; line-height: 1.8; color: #c9d1d9;
+  }
+  .code-keyword { color: #ff7b72; }
+  .code-string { color: #a5d6ff; }
+  .code-func { color: #d2a8ff; }
+  .code-tag { color: #7ee787; }
+  .code-punct { color: #c9d1d9; }
+  .code-comment { color: #8b949e; }
+  .code-prop { color: #79c0ff; }
+
+  /* Right panel - Preview */
+  .preview-panel {
+    position: absolute; right: 80px; top: 90px;
+    width: 500px; height: 480px;
+    background: #ffffff; border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    overflow: hidden;
+  }
+  .preview-header {
+    height: 40px; background: #f0f0f0;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex; align-items: center; padding: 0 16px; gap: 6px;
+  }
+  .preview-dot { width: 10px; height: 10px; border-radius: 50%; background: #d0d0d0; }
+  .preview-url {
+    margin-left: 8px; background: #e8e8e8; border-radius: 6px;
+    padding: 3px 12px; font-size: 11px; color: #888;
+    width: 260px; white-space: nowrap; overflow: hidden;
+  }
+  .preview-body { padding: 0; }
+  .preview-nav {
+    height: 48px; background: #fff; border-bottom: 1px solid #f0f0f0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+  }
+  .preview-logo-text { font-weight: 700; font-size: 16px; color: #1a1a2e; letter-spacing: -0.5px; }
+  .preview-nav-links { display: flex; gap: 20px; }
+  .preview-nav-link { font-size: 12px; color: #666; font-weight: 500; }
+  .preview-hero {
+    margin: 32px 32px; background: linear-gradient(135deg, #4D6BFE, #6366f1);
+    border-radius: 12px; padding: 36px 28px; color: #fff;
+  }
+  .preview-hero h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .preview-hero p { font-size: 12px; opacity: 0.9; line-height: 1.5; }
+  .preview-hero-btn {
+    display: inline-block; margin-top: 14px; background: #fff; color: #4D6BFE;
+    padding: 8px 20px; border-radius: 8px; font-size: 12px; font-weight: 600;
+  }
+  .preview-cards { display: flex; gap: 16px; margin: 0 32px; }
+  .preview-card {
+    flex: 1; height: 100px; background: #f8f9fa;
+    border-radius: 10px; border: 1px solid #eee; padding: 16px;
+  }
+  .preview-card-bar {
+    height: 8px; background: #e0e0e0; border-radius: 4px;
+    margin-bottom: 10px; width: 60%;
+  }
+  .preview-card-bar.short { width: 40%; }
+  .preview-card-dot {
+    width: 28px; height: 28px; border-radius: 8px; background: #4D6BFE;
+    margin-bottom: 8px; opacity: 0.2;
+  }
+
+  /* Text overlay */
+  .text-overlay {
+    position: absolute; left: 80px; bottom: 140px;
+    z-index: 10;
+  }
+  .badge {
+    display: inline-block; background: rgba(77,107,254,0.15);
+    color: #4D6BFE; padding: 6px 16px; border-radius: 20px;
+    font-size: 13px; font-weight: 600; letter-spacing: 1px;
+    border: 1px solid rgba(77,107,254,0.25); margin-bottom: 16px;
+  }
+  .main-title {
+    font-size: 42px; font-weight: 800; color: #ffffff;
+    line-height: 1.15; letter-spacing: -1px; max-width: 520px;
+  }
+  .main-title span { color: #4D6BFE; }
+  .sub-text {
+    font-size: 16px; color: rgba(255,255,255,0.6); margin-top: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  /* Arrow connector */
+  .arrow-connector {
+    position: absolute; left: 570px; top: 310px;
+    z-index: 5;
+  }
+
+  /* Brand */
+  .brand-logo {
+    position: absolute; top: 36px; left: 80px;
+    height: 32px; z-index: 20;
+  }
+  .brand-logo img { height: 32px; }
+  .brand-name {
+    position: absolute; bottom: 36px; right: 80px;
+    font-size: 18px; font-weight: 700; color: rgba(255,255,255,0.5);
+    letter-spacing: 2px; z-index: 20;
+  }
+  .pixel-tag {
+    position: absolute; top: 40px; right: 80px;
+    color: #4D6BFE; font-size: 13px; font-weight: 600;
+    letter-spacing: 1.5px; z-index: 10;
+    border: 1px solid rgba(77,107,254,0.3); padding: 6px 14px;
+    border-radius: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="cover">
+  <div class="grid-bg"></div>
+
+  <!-- Logo -->
+  <div class="brand-logo">
+    <img src="../../../../../public/logo1-no-bg.png" alt="ToolClub" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+    <span style="display:none; color:#fff; font-size:18px; font-weight:700;">ToolClub</span>
+  </div>
+
+  <div class="pixel-tag">PIXEL-PERFECT</div>
+
+  <!-- Code editor panel -->
+  <div class="code-panel">
+    <div class="code-header">
+      <div class="dot dot-red"></div>
+      <div class="dot dot-yellow"></div>
+      <div class="dot dot-green"></div>
+      <div class="code-tab">page.tsx</div>
+    </div>
+    <div class="code-body">
+      <span class="code-keyword">import</span><span class="code-punct"> { </span><span class="code-func">Hero</span><span class="code-punct">, </span><span class="code-func">Features</span><span class="code-punct"> } </span><span class="code-keyword">from</span><span class="code-punct"> </span><span class="code-string">'@/components'</span><span class="code-punct">;</span><br><br>
+      <span class="code-keyword">export default function</span><span class="code-punct"> </span><span class="code-func">HomePage</span><span class="code-punct">() {</span><br>
+      &nbsp;&nbsp;<span class="code-keyword">return</span><span class="code-punct"> (</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-tag">&lt;main</span> <span class="code-prop">className</span><span class="code-punct">=</span><span class="code-string">"min-h-screen"</span><span class="code-tag">&gt;</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-tag">&lt;Navbar</span> <span class="code-tag">/&gt;</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-tag">&lt;Hero</span> <span class="code-prop">title</span><span class="code-punct">=</span><span class="code-string">"Build Faster"</span> <span class="code-tag">/&gt;</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-tag">&lt;Features</span> <span class="code-prop">items</span><span class="code-punct">=</span><span class="code-punct">{</span><span class="code-prop">features</span><span class="code-punct">}</span> <span class="code-tag">/&gt;</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-tag">&lt;CTASection</span> <span class="code-tag">/&gt;</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-tag">&lt;Footer</span> <span class="code-tag">/&gt;</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-tag">&lt;/main&gt;</span><br>
+      &nbsp;&nbsp;<span class="code-punct">);</span><br>
+      <span class="code-punct">}</span><br><br>
+      <span class="code-comment">// Next.js 15+ · TypeScript · Tailwind CSS 4</span><br>
+      <span class="code-comment">// Lighthouse 90+ · SEO optimized · Vercel ready</span>
+    </div>
+  </div>
+
+  <!-- Website preview panel -->
+  <div class="preview-panel">
+    <div class="preview-header">
+      <div class="preview-dot"></div>
+      <div class="preview-dot"></div>
+      <div class="preview-dot"></div>
+      <div class="preview-url">https://yoursite.com</div>
+    </div>
+    <div class="preview-body">
+      <div class="preview-nav">
+        <div class="preview-logo-text">YourBrand</div>
+        <div class="preview-nav-links">
+          <span class="preview-nav-link">Features</span>
+          <span class="preview-nav-link">Pricing</span>
+          <span class="preview-nav-link">About</span>
+          <span class="preview-nav-link">Contact</span>
+        </div>
+      </div>
+      <div class="preview-hero">
+        <h2>Build Something Great</h2>
+        <p>Production-ready Next.js applications with pixel-perfect design and blazing fast performance. Launch in days, not weeks.</p>
+        <span class="preview-hero-btn">Get Started</span>
+      </div>
+      <div class="preview-cards">
+        <div class="preview-card">
+          <div class="preview-card-dot"></div>
+          <div class="preview-card-bar"></div>
+          <div class="preview-card-bar short"></div>
+        </div>
+        <div class="preview-card">
+          <div class="preview-card-dot"></div>
+          <div class="preview-card-bar"></div>
+          <div class="preview-card-bar short"></div>
+        </div>
+        <div class="preview-card">
+          <div class="preview-card-dot"></div>
+          <div class="preview-card-bar"></div>
+          <div class="preview-card-bar short"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Text -->
+  <div class="text-overlay">
+    <div class="badge">WEBSITE CLONE &amp; REDESIGN</div>
+    <div class="main-title">Any Website Into<br><span>Modern Next.js</span> Code</div>
+    <div class="sub-text">Pixel-Perfect · TypeScript · Tailwind CSS · 2-3x Faster Delivery</div>
+  </div>
+
+  <!-- Arrow connecting code to preview -->
+  <svg class="arrow-connector" width="100" height="60" viewBox="0 0 100 60">
+    <defs>
+      <linearGradient id="arrGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#0d1117;stop-opacity:0"/>
+        <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0"/>
+      </linearGradient>
+    </defs>
+    <path d="M10 30 L70 30" stroke="#4D6BFE" stroke-width="2" stroke-dasharray="6,4" opacity="0.6"/>
+    <polygon points="80,30 68,22 68,38" fill="#4D6BFE" opacity="0.6"/>
+  </svg>
+
+  <div class="brand-name">Gooodsky</div>
+</div>
+</body>
+</html>

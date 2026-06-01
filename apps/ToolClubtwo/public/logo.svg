@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" fill="none">
+  <rect x="0" y="0" width="48" height="48" rx="12" fill="url(#iconGradient)"/>
+  <defs>
+    <linearGradient id="iconGradient" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF6B00"/>
+      <stop offset="1" stop-color="#FF8C33"/>
+    </linearGradient>
+  </defs>
+  <rect x="14" y="10" width="20" height="5" rx="2.5" fill="white"/>
+  <rect x="19" y="16" width="10" height="18" rx="2.5" fill="white"/>
+  <circle cx="32" cy="14" r="3.5" fill="#F5A623"/>
+  <text x="60" y="31" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="700" letter-spacing="-0.5" fill="#1D2129">ToolClub</text>
+</svg>

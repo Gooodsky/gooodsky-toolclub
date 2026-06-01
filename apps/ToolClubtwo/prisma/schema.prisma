@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String    @id @default(cuid())
+  supabaseId     String?   @unique
+  email          String?   @unique
+  name           String?
+  avatarUrl      String?
+  plan           String    @default("free")
+  planExpiresAt  DateTime?
+  dailyCount     Int       @default(0)
+  dailyCountDate String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  projects       ListingProject[]
+  paymentOrders  PaymentOrder[]
+  authTokens     AuthToken[]
+}
+
+model AuthToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ListingProject {
+  id              String   @id @default(cuid())
+  userId          String
+  productName     String
+  productInfo     String
+  targetMarkets   String
+  status          String   @default("GENERATING")
+  errorMessage    String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user            User      @relation(fields: [userId], references: [id])
+  listings        Listing[]
+
+  @@index([userId, status])
+}
+
+model Listing {
+  id          String   @id @default(cuid())
+  projectId   String
+  platform    String
+  language    String
+  title       String
+  bullets     String?
+  description String
+  keywords    String?
+  createdAt   DateTime @default(now())
+
+  project     ListingProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, platform, language])
+}
+
+model PaymentOrder {
+  id        String    @id @default(cuid())
+  orderNo   String    @unique
+  userId    String
+  plan      String
+  amount    Int
+  paid      Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  paidAt    DateTime?
+
+  user      User      @relation(fields: [userId], references: [id])
+}

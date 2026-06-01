@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1280px; height: 769px; overflow: hidden;
+    font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+    background: #0a0a1a;
+  }
+  .cover {
+    width: 1280px; height: 769px; position: relative;
+    background: linear-gradient(160deg, #0a0a1a 0%, #0d1128 30%, #1a1035 60%, #0f0f2a 100%);
+    overflow: hidden;
+  }
+  /* Animated grid */
+  .grid-bg {
+    position: absolute; inset: 0; opacity: 0.06;
+    background-image:
+      linear-gradient(rgba(77,107,254,0.4) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(77,107,254,0.4) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+  /* Glow orbs */
+  .glow-orb {
+    position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+  }
+  .orb-1 {
+    width: 350px; height: 350px; background: #4D6BFE;
+    top: -80px; left: -80px;
+  }
+  .orb-2 {
+    width: 280px; height: 280px; background: #8b5cf6;
+    bottom: -60px; right: 20%; opacity: 0.25;
+  }
+  .orb-3 {
+    width: 200px; height: 200px; background: #a78bfa;
+    top: 40%; right: -40px; opacity: 0.2;
+  }
+
+  /* Neural network lines */
+  .neural-container {
+    position: absolute; inset: 0;
+  }
+
+  /* Content cards */
+  .card {
+    position: absolute; background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 20px 22px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  .card-icon {
+    width: 42px; height: 42px; border-radius: 10px; margin-bottom: 12px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card h3 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .card p { font-size: 11px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+  .card-1 {
+    right: 100px; top: 170px; width: 220px;
+  }
+  .card-1 .card-icon { background: rgba(77,107,254,0.2); color: #4D6BFE; font-size: 18px; }
+  .card-2 {
+    right: 340px; top: 90px; width: 220px;
+  }
+  .card-2 .card-icon { background: rgba(139,92,246,0.2); color: #a78bfa; font-size: 18px; }
+  .card-3 {
+    right: 180px; bottom: 160px; width: 220px;
+  }
+  .card-3 .card-icon { background: rgba(236,72,153,0.2); color: #ec4899; font-size: 18px; }
+  .card-4 {
+    right: 400px; bottom: 220px; width: 200px;
+  }
+  .card-4 .card-icon { background: rgba(52,211,153,0.2); color: #34d399; font-size: 18px; }
+
+  /* Central AI core */
+  .ai-core {
+    position: absolute; left: 80px; top: 50%; transform: translateY(-50%);
+    z-index: 10;
+  }
+  .core-circle {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: linear-gradient(135deg, #4D6BFE, #8b5cf6);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; color: #fff; font-weight: 800;
+    box-shadow: 0 0 60px rgba(77,107,254,0.4), 0 0 120px rgba(77,107,254,0.2);
+    position: relative; z-index: 2;
+  }
+  .core-ring {
+    position: absolute; border-radius: 50%; border: 1px solid rgba(77,107,254,0.2);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+  }
+  .ring-1 { width: 140px; height: 140px; }
+  .ring-2 { width: 200px; height: 200px; border-color: rgba(139,92,246,0.15); }
+  .ring-3 { width: 260px; height: 260px; border-color: rgba(77,107,254,0.08); }
+
+  /* Pipeline nodes */
+  .pipeline-node {
+    position: absolute; width: 12px; height: 12px; border-radius: 50%;
+    background: #4D6BFE; box-shadow: 0 0 10px rgba(77,107,254,0.6);
+    z-index: 5;
+  }
+
+  /* Text */
+  .badge {
+    position: absolute; left: 80px; top: 200px; z-index: 15;
+    display: inline-block; background: rgba(77,107,254,0.12);
+    color: #a78bfa; padding: 6px 16px; border-radius: 20px;
+    font-size: 13px; font-weight: 600; letter-spacing: 1px;
+    border: 1px solid rgba(139,92,246,0.25);
+  }
+  .main-title {
+    position: absolute; left: 80px; top: 250px; z-index: 15;
+    font-size: 42px; font-weight: 800; color: #fff;
+    line-height: 1.15; letter-spacing: -1px; max-width: 480px;
+  }
+  .main-title span {
+    background: linear-gradient(135deg, #4D6BFE, #a78bfa);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .sub-text {
+    position: absolute; left: 80px; top: 380px; z-index: 15;
+    font-size: 16px; color: rgba(255,255,255,0.5); letter-spacing: 0.5px;
+    max-width: 460px; line-height: 1.5;
+  }
+  .features-row {
+    position: absolute; left: 80px; bottom: 170px; z-index: 15;
+    display: flex; gap: 12px;
+  }
+  .feature-tag {
+    padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .feature-tag.highlight {
+    background: rgba(77,107,254,0.15); border-color: rgba(77,107,254,0.3); color: #4D6BFE;
+  }
+
+  /* Brand */
+  .brand-logo {
+    position: absolute; top: 36px; left: 80px; height: 32px; z-index: 20;
+  }
+  .brand-logo img { height: 32px; }
+  .brand-name {
+    position: absolute; bottom: 36px; right: 80px;
+    font-size: 18px; font-weight: 700; color: rgba(255,255,255,0.4);
+    letter-spacing: 2px; z-index: 20;
+  }
+
+  /* Platform icons row */
+  .platform-row {
+    position: absolute; right: 80px; top: 420px; z-index: 10;
+    display: flex; gap: 10px;
+  }
+  .platform-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: rgba(255,255,255,0.6); font-weight: 600;
+  }
+</style>
+</head>
+<body>
+<div class="cover">
+  <div class="grid-bg"></div>
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <div class="glow-orb orb-3"></div>
+
+  <!-- Neural network SVG -->
+  <svg class="neural-container" width="1280" height="769" viewBox="0 0 1280 769" style="position:absolute;inset:0;z-index:3;">
+    <defs>
+      <linearGradient id="lineGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#4D6BFE;stop-opacity:0.5"/>
+        <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.1"/>
+      </linearGradient>
+      <linearGradient id="lineGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#4D6BFE;stop-opacity:0.3"/>
+        <stop offset="100%" style="stop-color:#a78bfa;stop-opacity:0.05"/>
+      </linearGradient>
+    </defs>
+    <!-- Lines from AI core to cards -->
+    <line x1="120" y1="385" x2="900" y2="220" stroke="url(#lineGrad1)" stroke-width="1" opacity="0.4"/>
+    <line x1="120" y1="385" x2="660" y2="150" stroke="url(#lineGrad2)" stroke-width="1" opacity="0.3"/>
+    <line x1="120" y1="385" x2="820" y2="520" stroke="url(#lineGrad1)" stroke-width="1" opacity="0.3"/>
+    <line x1="120" y1="385" x2="600" y2="450" stroke="url(#lineGrad2)" stroke-width="1" opacity="0.25"/>
+    <!-- Cross connections -->
+    <line x1="900" y1="220" x2="660" y2="150" stroke="#4D6BFE" stroke-width="0.5" opacity="0.15"/>
+    <line x1="820" y1="520" x2="600" y2="450" stroke="#8b5cf6" stroke-width="0.5" opacity="0.15"/>
+    <line x1="660" y1="150" x2="820" y2="520" stroke="#a78bfa" stroke-width="0.5" opacity="0.1"/>
+
+    <!-- Pipeline nodes -->
+    <circle cx="320" cy="340" r="5" fill="#4D6BFE" opacity="0.8"/>
+    <circle cx="480" cy="270" r="4" fill="#8b5cf6" opacity="0.7"/>
+    <circle cx="550" cy="320" r="5" fill="#4D6BFE" opacity="0.6"/>
+    <circle cx="700" cy="200" r="4" fill="#a78bfa" opacity="0.5"/>
+    <circle cx="650" cy="380" r="5" fill="#4D6BFE" opacity="0.5"/>
+
+    <!-- Animated dots on lines (static rendering) -->
+    <circle cx="400" cy="300" r="3" fill="#fff" opacity="0.6"/>
+    <circle cx="550" cy="225" r="3" fill="#fff" opacity="0.4"/>
+    <circle cx="500" cy="430" r="3" fill="#fff" opacity="0.5"/>
+  </svg>
+
+  <!-- AI Core -->
+  <div class="ai-core">
+    <div class="core-ring ring-3"></div>
+    <div class="core-ring ring-2"></div>
+    <div class="core-ring ring-1"></div>
+    <div class="core-circle">AI</div>
+  </div>
+
+  <!-- Content Cards (floating right side) -->
+  <div class="card card-2">
+    <div class="card-icon">&#9679;&#9679;&#9679;</div>
+    <h3>Ad Copy</h3>
+    <p>High-converting ad creatives for Google, Meta, TikTok</p>
+  </div>
+  <div class="card card-1">
+    <div class="card-icon">&#9632;&#9632;&#9632;</div>
+    <h3>Product Descriptions</h3>
+    <p>SEO-optimized product copy for 100s of SKUs at once</p>
+  </div>
+  <div class="card card-3">
+    <div class="card-icon">&#9650;&#9650;</div>
+    <h3>Social Media Posts</h3>
+    <p>TikTok scripts, Instagram captions, tweets</p>
+  </div>
+  <div class="card card-4">
+    <div class="card-icon">&#9670;&#9670;</div>
+    <h3>Blog Drafts</h3>
+    <p>Long-form articles in your brand voice</p>
+  </div>
+
+  <!-- Text content -->
+  <div class="badge">AI CONTENT ENGINE</div>
+  <div class="main-title">Your Brand Voice<br><span>Automated at Scale</span></div>
+  <div class="sub-text">
+    A custom AI pipeline that generates product descriptions, ad copy,
+    and social media posts — trained on your brand, powered by GPT-4o &amp; Claude.
+  </div>
+  <div class="features-row">
+    <div class="feature-tag highlight">Multi-Platform</div>
+    <div class="feature-tag">Brand Voice Training</div>
+    <div class="feature-tag">Batch Generation</div>
+    <div class="feature-tag">API &amp; Dashboard</div>
+  </div>
+
+  <!-- Platform icons -->
+  <div class="platform-row">
+    <div class="platform-icon">Shopify</div>
+    <div class="platform-icon">TikTok</div>
+    <div class="platform-icon">Instagram</div>
+    <div class="platform-icon">WordPress</div>
+    <div class="platform-icon">Blog</div>
+  </div>
+
+  <!-- Brand -->
+  <div class="brand-logo">
+    <img src="../../../../../public/logo1-no-bg.png" alt="ToolClub" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+    <span style="display:none; color:#fff; font-size:18px; font-weight:700;">ToolClub</span>
+  </div>
+  <div class="brand-name">Gooodsky</div>
+</div>
+</body>
+</html>

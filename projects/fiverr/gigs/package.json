@@ -1,0 +1,7 @@
+{
+  "name": "fiverr-gig-covers",
+  "private": true,
+  "scripts": {
+    "screenshot": "node screenshot-covers.cjs"
+  }
+}
