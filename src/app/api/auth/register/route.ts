@@ -20,13 +20,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "密码至少8位" }, { status: 400 })
     }
 
-    if (findUserByEmail(email)) {
+    const existing = await findUserByEmail(email)
+    if (existing) {
       return NextResponse.json({ error: "该邮箱已注册" }, { status: 409 })
     }
 
     const id = cuid()
     const hashed = await bcrypt.hash(password, 10)
-    createUser(id, email, hashed)
+    await createUser(id, email, hashed)
 
     return NextResponse.json({ success: true })
   } catch {

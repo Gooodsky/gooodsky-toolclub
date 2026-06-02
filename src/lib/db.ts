@@ -1,20 +1,22 @@
-import Database from "better-sqlite3"
-import path from "node:path"
+import { neon } from "@neondatabase/serverless"
 
-const dbPath = "C:/Users/Administrator/toolclub.db"
-const db = new Database(dbPath)
+const sql = neon(process.env.DATABASE_URL!)
 
-db.pragma("journal_mode = WAL")
+// 确保表存在
+async function ensureTable() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS "User" (
+      id TEXT PRIMARY KEY,
+      email TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      name TEXT,
+      "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `
+}
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS User (
-    id TEXT PRIMARY KEY,
-    email TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL,
-    name TEXT,
-    createdAt TEXT NOT NULL DEFAULT (datetime('now'))
-  )
-`)
+// 模块加载时初始化表
+ensureTable().catch(console.error)
 
 export interface User {
   id: string
@@ -24,12 +26,13 @@ export interface User {
   createdAt: string
 }
 
-export const findUserByEmail = (email: string): User | undefined => {
-  return db.prepare("SELECT * FROM User WHERE email = ?").get(email) as User | undefined
+export const findUserByEmail = async (email: string): Promise<User | undefined> => {
+  const rows = await sql`SELECT * FROM "User" WHERE email = ${email}`
+  return rows[0] as User | undefined
 }
 
-export const createUser = (id: string, email: string, password: string): void => {
-  db.prepare("INSERT INTO User (id, email, password) VALUES (?, ?, ?)").run(id, email, password)
+export const createUser = async (id: string, email: string, password: string): Promise<void> => {
+  await sql`INSERT INTO "User" (id, email, password) VALUES (${id}, ${email}, ${password})`
 }
 
-export { db }
+export { sql as db }
