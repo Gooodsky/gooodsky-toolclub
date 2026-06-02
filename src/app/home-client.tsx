@@ -60,8 +60,8 @@ export default function HomeClient({ initialSession }: { initialSession: Session
     const regBtn = regBtnRef.current
     const logoutBtn = logoutBtnRef.current
 
-    const onCta1 = () => handleCtaClick("http://localhost:3001/dashboard/upload")
-    const onCta2 = () => handleCtaClick("http://localhost:3002/dashboard/upload")
+    const onCta1 = () => handleCtaClick("https://toolclub.net/one/dashboard/upload")
+    const onCta2 = () => handleCtaClick("https://toolclub.net/two/dashboard/upload")
     const onLogin = () => openModal("login")
     const onReg = () => openModal("register")
     const onLogout = () => handleLogout()
@@ -137,7 +137,7 @@ export default function HomeClient({ initialSession }: { initialSession: Session
           <div className="flex gap-4 w-full max-w-2xl">
             {session?.user ? (
               <a
-                href="http://localhost:3001/dashboard/upload"
+                href="https://toolclub.net/one/dashboard/upload"
                 className="relative rounded-2xl pt-6 pb-7 px-8 min-w-0 flex-1 bg-white/50 backdrop-blur-sm cursor-pointer text-center transition duration-300 hover:-translate-y-2 hover:shadow-lg border-none no-underline"
                 style={{ boxShadow: '0 0 0 1px #f1f5f9, 0 2px 4px rgba(0,0,0,.05), 0 12px 24px rgba(0,0,0,.05)' }}
               >
@@ -166,7 +166,7 @@ export default function HomeClient({ initialSession }: { initialSession: Session
             )}
             {session?.user ? (
               <a
-                href="http://localhost:3002/dashboard/upload"
+                href="https://toolclub.net/two/dashboard/upload"
                 className="relative rounded-2xl pt-6 pb-7 px-8 min-w-0 flex-1 bg-white/50 backdrop-blur-sm cursor-pointer text-center transition duration-300 hover:-translate-y-2 hover:shadow-lg border-none no-underline"
                 style={{ boxShadow: '0 0 0 1px #f1f5f9, 0 2px 4px rgba(0,0,0,.05), 0 12px 24px rgba(0,0,0,.05)' }}
               >

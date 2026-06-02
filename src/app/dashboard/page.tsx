@@ -36,7 +36,7 @@ export default async function DashboardPage() {
         <p className="text-slate-500 text-lg">您的AI工具百宝箱</p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto mt-12">
-          <a href="http://localhost:3001" target="_blank"
+          <a href="https://toolclub.net/one" target="_blank"
             className="relative rounded-2xl pt-6 pb-7 px-8 min-w-0 flex-1 bg-white/50 backdrop-blur-sm cursor-pointer text-center transition duration-300 hover:-translate-y-2 hover:shadow-lg"
             style={{ boxShadow: '0 0 0 1px #f1f5f9, 0 2px 4px rgba(0,0,0,.05), 0 12px 24px rgba(0,0,0,.05)' }}
           >
@@ -48,7 +48,7 @@ export default async function DashboardPage() {
               立即体验 <span className="text-base">→</span>
             </div>
           </a>
-          <a href="http://localhost:3002" target="_blank"
+          <a href="https://toolclub.net/two" target="_blank"
             className="relative rounded-2xl pt-6 pb-7 px-8 min-w-0 flex-1 bg-white/50 backdrop-blur-sm cursor-pointer text-center transition duration-300 hover:-translate-y-2 hover:shadow-lg"
             style={{ boxShadow: '0 0 0 1px #f1f5f9, 0 2px 4px rgba(0,0,0,.05), 0 12px 24px rgba(0,0,0,.05)' }}
           >

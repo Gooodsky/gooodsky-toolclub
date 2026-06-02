@@ -9,7 +9,7 @@ const navItems = [
   { href: '/dashboard/upload', label: '新建项目', icon: Upload },
   { href: '/dashboard/favorites', label: '我的收藏', icon: Star },
   { href: '/pricing', label: '升级会员', icon: CreditCard },
-  { href: 'http://localhost:3000/', label: '返回首页', icon: Home },
+  { href: 'https://toolclub.net/', label: '返回首页', icon: Home },
 ]
 
 export default function NavSidebar() {

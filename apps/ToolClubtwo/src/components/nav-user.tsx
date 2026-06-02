@@ -12,7 +12,7 @@ export default function NavUser() {
       <div className="flex items-center gap-4">
         <span className="text-sm text-slate-500">{session.user.email}</span>
         <button
-          onClick={() => signOut({ callbackUrl: "http://localhost:3000" })}
+          onClick={() => signOut({ callbackUrl: "https://toolclub.net" })}
           className="text-sm font-medium text-slate-400 hover:text-slate-600 cursor-pointer bg-transparent border-none transition"
         >
           退出登录

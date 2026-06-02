@@ -136,7 +136,7 @@ export default function Home() {
           </div>
           <div className="grid gap-6 md:grid-cols-2 max-w-3xl mx-auto">
             <a
-              href="http://47.120.55.167"
+              href="https://toolclub.net"
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-lg border border-white/20 bg-white/50 backdrop-blur-sm p-6 shadow-elevation-1 transition hover:border-primary hover:shadow-elevation-2"

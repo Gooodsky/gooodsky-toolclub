@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="min-h-screen bg-center bg-cover flex flex-col" style={{ backgroundImage: 'url(/images/ds-bg.webp)' }}>
           {/* Nav */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/50">
-            <a href="http://localhost:3000" className="flex items-center gap-1">
+            <a href="https://toolclub.net" className="flex items-center gap-1">
               <img alt="ToolClub" className="w-10 h-10" src="/logo1-no-bg.png" />
               <span className="text-xl font-bold" style={{ color: '#4D6BFE' }}>ToolClub</span>
             </a>
